@@ -25,7 +25,7 @@ function usage() {
 function install() {
   echo -e "Installing actions, triggers, and rules for ibm-cloud-functions-refarch-data-processing-message-hub..."
 
-  echo -e "Make Message Hub connection info available to IBM Cloud Functions"
+  echo -e "Make IBM Message Hub connection info available to IBM Cloud Functions"
   wsk package refresh
 
   echo "Creating the message-trigger trigger"
@@ -34,16 +34,19 @@ function install() {
     --param isJSONData true \
     --param topic ${SRC_TOPIC}
 
-  echo "Creating receive-consume action as a regular Node.js action"
-  wsk action create receive-consume actions/receive-consume.js
+  echo "Creating the package for the actions"
+  wsk package create data-processing-message-hub
 
-  echo "Creating transform-produce action as regular Node.js action"
-  wsk action create transform-produce actions/transform-produce.js \
+  echo "Creating receive-consume action as a Node.js action"
+  wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
+
+  echo "Creating transform-produce action as a Node.js action"
+  wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
     --param topic ${DEST_TOPIC} \
     --param kafka ${KAFKA_INSTANCE}
 
   echo "Creating the message-processing-sequence sequence that links the consumer and producer actions"
-  wsk action create message-processing-sequence --sequence receive-consume,transform-produce
+  wsk action create data-processing-message-hub/message-processing-sequence --sequence data-processing-message-hub/receive-consume,data-processing-message-hub/transform-produce
 
   echo "Creating the  message-rule rule that links the trigger to the sequence"
   wsk rule create message-rule message-trigger message-processing-sequence

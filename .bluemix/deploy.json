@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Message Hub Data Processing with OpenWhisk Toolchain Deployment to Bluemix",
-    "description": "IBM Cloud Function reference architecture template with IBM Cloud Function toolchain",
+    "title": "Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions Toolchain Deployment",
+    "description": "IBM Cloud Function reference architecture template wit toolchain",
     "longDescription": "Information entered here will be used at deployment time.",
     "type": "object",
     "properties": {
@@ -26,31 +26,31 @@
             "type": "password"
         },
         "message-hub-api-key": {
-            "description": "Message Hub name, copy from Bluemix console Message Hub instance credentials",
+            "description": "IBM Message Hub name, copy from the IBM Cloud console Message Hub instance credentials",
             "type": "string"
         },
         "message-hub-user": {
-            "description": "Message Hub name, copy from Bluemix console Message Hub instance credentials",
+            "description": "IBM Message Hub name, copy from the IBM Cloud console IBM Message Hub instance credentials",
             "type": "string"
         },
         "message-hub-rest-url": {
-            "description": "Message Hub REST URL, copy from Message Hub console",
+            "description": "IBM Message Hub REST URL, copy from Message Hub console",
             "type": "password"
         },
         "message-hub-admin-url": {
-            "description": "Message Hub Admin URL, copy from Message Hub console",
+            "description": "IBM Message Hub Admin URL, copy from Message Hub console",
             "type": "string"
         },
         "message-hub-instance-name": {
-            "description": "Message Hub service instance name, copy from Bluemix console",
+            "description": "IBM Message Hub service instance name, copy from Bluemix console",
             "type": "string"
         },
         "message-hub-src-topic": {
-            "description": "Source topic URL, copy from Message Hub manage console",
+            "description": "Source topic URL, copy from IBM Message Hub manage console",
             "type": "string"
         },
         "message-hub-out-topic": {
-            "description": "Destination topic URL, copy from Message Hub manage console",
+            "description": "Destination topic URL, copy from IBM Message Hub manage console",
             "type": "string"
         }
     },
@@ -89,49 +89,49 @@
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub API Key",
+            "title": "IBM Message Hub API Key",
             "key": "message-hub-api-key"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub User",
+            "title": "IBM Message Hub User",
             "key": "message-hub-user"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub Password",
+            "title": "IBM Message Hub Password",
             "key": "message-hub-password"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub REST URL",
+            "title": "IBM Message Hub REST URL",
             "key": "message-hub-rest-url"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub Admin URL",
+            "title": "IBM Message Hub Admin URL",
             "key": "message-hub-admin-url"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub Instance Name",
+            "title": "IBM Message Hub Instance Name",
             "key": "message-hub-instance-name"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub Source Topic",
+            "title": "IBM Message Hub Source Topic",
             "key": "message-hub-src-topic"
         },
         {
             "type": "text",
             "readonly": false,
-            "title": "Message Hub Destination Topic",
+            "title": "IBM Message Hub Destination Topic",
             "key": "message-hub-out-topic"
         },
         {
