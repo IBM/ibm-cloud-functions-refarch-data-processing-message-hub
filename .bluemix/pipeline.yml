@@ -53,16 +53,16 @@ stages:
       set -x
       set +e
 
-      # download openwhisk cli
+      # Download IBM Cloud CLI and Cloud Functions plugin 
       if [ ! -f ./wsk ]; then
           wget https://openwhisk.ng.bluemix.net/cli/go/download/linux/amd64/wsk
           chmod u+x wsk
       fi
 
-      # set up openwhisk cli
+      # Set the IBM Cloud Functions API key
       ./wsk property set --apihost ${CLOUD_FUNCTIONS_API_ENDPOINT} --auth ${CLOUD_FUNCTIONS_API_KEY}
 
-      # create openwhisk package
+      # Make sure the IBM Message Hub instance is configured
       ./wsk package refresh
 
       echo "Creating a clean deployment"

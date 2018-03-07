@@ -1,8 +1,6 @@
 # Deploy using IBM Continuous Delivery
 
-This deployment approach clones this repository into your own GitHub namespace and sets up an IBM Continuous Delivery toolchain that redeploys your application each time changes are pushed to your clone.
-
-Use the button below to clone a copy of this repository and deploy an instance to the IBM Cloud as part of a DevOps toolchain.
+This deployment approach clones this repository under your own GitHub name and sets up an IBM Continuous Delivery toolchain that redeploys your application each time changes are pushed to your clone.
 
 Supply your IBM Cloud Functions API key and [Service] credentials under the Delivery Pipeline icon, click Create, then run the Deploy stage in the resulting Delivery Pipeline.
 

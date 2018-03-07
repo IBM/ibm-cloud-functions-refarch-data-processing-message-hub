@@ -27,6 +27,7 @@ Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_
 `deploy.sh` is a convenience script reads the environment variables from `local.env` and creates the OpenWhisk actions, triggers, and rules on your behalf. Later you will run the commands in the file directly.
 
 ```bash
+cd bx-wsk
 ./deploy.sh --install
 ```
 
@@ -81,7 +82,8 @@ wsk trigger create message-trigger \
 Upload the `receive-consume` action as a JavaScript action. This downloads messages when they arrive via the trigger.
 
 ```bash
-wsk action create receive-consume actions/receive-consume.js
+wsk package create data-processing-message-hub
+wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
 ```
 
 ### 5.3 Create action to aggregate and send back message
@@ -89,7 +91,7 @@ wsk action create receive-consume actions/receive-consume.js
 Upload the `transform-produce` action. This aggregates information from the action above, and sends a summary JSON string back to another Message Hub topic.
 
 ```bash
-wsk action create transform-produce actions/transform-produce.js \
+wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
   --param topic ${DEST_TOPIC} \
   --param kafka ${KAFKA_INSTANCE}
 ```
