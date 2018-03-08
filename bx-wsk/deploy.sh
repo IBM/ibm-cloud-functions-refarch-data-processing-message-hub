@@ -23,33 +23,35 @@ function usage() {
 }
 
 function install() {
+  set -e
+
   echo -e "Installing actions, triggers, and rules for ibm-cloud-functions-refarch-data-processing-message-hub..."
 
   echo -e "Make IBM Message Hub connection info available to IBM Cloud Functions"
-  wsk package refresh
+  bx wsk package refresh
 
   echo "Creating the message-trigger trigger"
-  wsk trigger create message-trigger \
+  bx wsk trigger create message-trigger \
     --feed Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubFeed \
     --param isJSONData true \
     --param topic ${SRC_TOPIC}
 
   echo "Creating the package for the actions"
-  wsk package create data-processing-message-hub
+  bx wsk package create data-processing-message-hub
 
   echo "Creating receive-consume action as a Node.js action"
-  wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
+  bx wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
 
   echo "Creating transform-produce action as a Node.js action"
-  wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
+  bx wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
     --param topic ${DEST_TOPIC} \
     --param kafka ${KAFKA_INSTANCE}
 
   echo "Creating the message-processing-sequence sequence that links the consumer and producer actions"
-  wsk action create data-processing-message-hub/message-processing-sequence --sequence data-processing-message-hub/receive-consume,data-processing-message-hub/transform-produce
+  bx wsk action create data-processing-message-hub/message-processing-sequence --sequence data-processing-message-hub/receive-consume,data-processing-message-hub/transform-produce
 
   echo "Creating the  message-rule rule that links the trigger to the sequence"
-  wsk rule create message-rule message-trigger message-processing-sequence
+  bx wsk rule create message-rule message-trigger message-processing-sequence
 
   echo -e "Install Complete"
 }
@@ -58,12 +60,13 @@ function install() {
 function uninstall() {
   echo -e "Uninstalling..."
 
-  wsk rule delete --disable message-rule
-	wsk trigger delete message-trigger
-	wsk action delete message-processing-sequence
-	wsk action delete receive-consume
-	wsk action delete transform-produce
-  wsk package delete Bluemix_${KAFKA_INSTANCE}_Credentials-1
+  bx wsk rule delete --disable message-rule
+	bx wsk trigger delete message-trigger
+	bx wsk action delete data-processing-message-hub/message-processing-sequence
+	bx wsk action delete data-processing-message-hub/receive-consume
+	bx wsk action delete data-processing-message-hub/transform-produce
+  bx wsk package delete Bluemix_${KAFKA_INSTANCE}_Credentials-1
+  bx wsk package delete data-processing-message-hub
 
   echo -e "Uninstall Complete"
 }

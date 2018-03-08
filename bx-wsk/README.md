@@ -1,17 +1,17 @@
-# Deploy step-by-step with the `bx wsk` command line tool
+# Deploy step-by-step with the `bx` command line tool
 
 ## Prerequisites
 
 You should have a basic understanding of the Cloud Functions/OpenWhisk programming model. If not, [try the action, trigger, and rule demo first](https://github.com/IBM/openwhisk-action-trigger-rule).
 
-Also, you'll need an IBM Cloud account and the latest [OpenWhisk command line tool (`wsk`) installed and on your PATH](https://github.com/IBM/openwhisk-action-trigger-rule/blob/master/docs/OPENWHISK.md).
+Also, you'll need an IBM Cloud account and the latest [`bx` command line tool with the Cloud Functions plugin installed and on your PATH](https://console.bluemix.net/openwhisk/learn/cli).
 
-As an alternative to this end-to-end example, you might also consider the more [basic "building block" version](https://github.com/IBM/openwhisk-message-hub-trigger) of this sample.
+As an alternative to this end-to-end example, you might also consider the more [basic "building block" version](https://github.com/IBM/ibm-cloud-functions-message-hub-trigger) of this sample.
 
 ## Steps
 
 1. [Configure IBM Message Hub](#1-configure-ibm-message-hub)
-2. [Create OpenWhisk actions, triggers, and rules](#2-create-openwhisk-actions-triggers-and-rules)
+2. [Create IBM Cloud Functions actions, triggers, and rules](#2-create-ibm-cloud-functions-actions-triggers-and-rules)
 3. [Test new message events](#3-test-new-message-events)
 4. [Delete actions, triggers, and rules](#4-delete-actions-triggers-and-rules)
 5. [Recreate deployment manually](#5-recreate-deployment-manually)
@@ -22,12 +22,13 @@ Log into the IBM Cloud, provision a [Message Hub](https://console.ng.bluemix.net
 
 Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
-## 2. Create OpenWhisk actions, triggers, and rules
+## 2. Create IBM Cloud Functions actions, triggers, and rules
 
-`deploy.sh` is a convenience script reads the environment variables from `local.env` and creates the OpenWhisk actions, triggers, and rules on your behalf. Later you will run the commands in the file directly.
+`deploy.sh` is a convenience script reads the environment variables from `local.env` and creates the OpenWhisk actions, triggers, and rules on your behalf. Later you will run the commands from that file directly to understand how it works step-by-step.
 
 ```bash
 cd bx-wsk
+bx login -a api.ng.bluemix.net -o "$YOUR_ORG" -s "$YOUR_SPACE"
 ./deploy.sh --install
 ```
 
@@ -38,7 +39,7 @@ cd bx-wsk
 Open one terminal window to poll the logs:
 
 ```bash
-wsk activation poll
+bx wsk activation poll
 ```
 
 Send a message with a set of events to process.
@@ -47,7 +48,7 @@ Send a message with a set of events to process.
 # Produce a message, will trigger the sequence of actions
 DATA=$( base64 events.json | tr -d '\n' | tr -d '\r' )
 
-wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
+bx wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
   --param topic $SRC_TOPIC \
   --param value "$DATA" \
   --param base64DecodeValue true
@@ -70,8 +71,8 @@ This section provides a deeper look into what the `deploy.sh` script executes so
 Create the `message-trigger` trigger using the Message Hub packaged feed that listens for new messages. The package refresh will make the Message Hub service credentials and connection information available to OpenWhisk.
 
 ```bash
-wsk package refresh
-wsk trigger create message-trigger \
+bx wsk package refresh
+bx wsk trigger create message-trigger \
   --feed Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubFeed \
   --param isJSONData true \
   --param topic ${SRC_TOPIC}
@@ -82,8 +83,8 @@ wsk trigger create message-trigger \
 Upload the `receive-consume` action as a JavaScript action. This downloads messages when they arrive via the trigger.
 
 ```bash
-wsk package create data-processing-message-hub
-wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
+bx wsk package create data-processing-message-hub
+bx wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
 ```
 
 ### 5.3 Create action to aggregate and send back message
@@ -91,7 +92,7 @@ wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs
 Upload the `transform-produce` action. This aggregates information from the action above, and sends a summary JSON string back to another Message Hub topic.
 
 ```bash
-wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
+bx wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
   --param topic ${DEST_TOPIC} \
   --param kafka ${KAFKA_INSTANCE}
 ```
@@ -101,7 +102,7 @@ wsk action create data-processing-message-hub/transform-produce ../runtimes/node
 Declare a linkage between the `receive-consume` and `transform-produce` in a sequence named `message-processing-sequence`.
 
 ```bash
-wsk action create message-processing-sequence --sequence receive-consume,transform-produce
+bx wsk action create message-processing-sequence --sequence receive-consume,transform-produce
 ```
 
 ### 5.5 Create rule that links trigger to sequence
@@ -109,7 +110,7 @@ wsk action create message-processing-sequence --sequence receive-consume,transfo
 Declare a rule named `message-rule` that links the trigger `message-trigger` to the sequence named `message-processing-sequence`.
 
 ```bash
-wsk rule create message-rule message-trigger message-processing-sequence
+bx wsk rule create message-rule message-trigger message-processing-sequence
 ```
 
 ### 5.6 Test new message events
@@ -118,7 +119,7 @@ wsk rule create message-rule message-trigger message-processing-sequence
 # Produce a message, will trigger the sequence
 DATA=$( base64 events.json | tr -d '\n' | tr -d '\r' )
 
-wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
+bx wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
   --param topic $SRC_TOPIC \
   --param value "$DATA" \
   --param base64DecodeValue true
@@ -126,10 +127,10 @@ wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
 
 ## Troubleshooting
 
-Check for errors first in the OpenWhisk activation log. Tail the log on the command line with `wsk activation poll` or drill into details visually with the [monitoring console on the IBM Cloud](https://console.ng.bluemix.net/openwhisk/dashboard).
+Check for errors first in the OpenWhisk activation log. Tail the log on the command line with `bx wsk activation poll` or drill into details visually with the [monitoring console on the IBM Cloud](https://console.ng.bluemix.net/openwhisk/dashboard).
 
-If the error is not immediately obvious, make sure you have the [latest version of the `wsk` CLI installed](https://console.ng.bluemix.net/openwhisk/learn/cli). If it's older than a few weeks, download an update.
+If the error is not immediately obvious, make sure you have the [latest version of the `bx` CLI installed](https://console.ng.bluemix.net/openwhisk/learn/cli). If it's older than a few weeks, download an update.
 
 ```bash
-wsk property get --cliversion
+bx wsk property get --cliversion
 ```
