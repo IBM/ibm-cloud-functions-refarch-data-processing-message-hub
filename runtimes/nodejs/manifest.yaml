@@ -1,6 +1,6 @@
 # Manifest for ibm-cloud-functions-refarch-data-processing-message-hub
 # Repo is located at https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub
-# Installing IBM Cloud Function actions, triggers, and rules for IBM Message Hub sample app
+# Installing IBM Cloud Function actions, triggers, and rules for the IBM Message Hub sample app
 
 # Deployment using this manifest file creates following OpenWhisk components:
 #   Package:    data-processing-message-hub
@@ -10,7 +10,7 @@
 #   Trigger:    message-trigger
 #   Rule:       message-rule
 
-# This manifest file expects following env. variables:
+# This manifest file expects following environment variables:
 #   KAFKA_INSTANCE
 #   SRC_TOPIC
 #   DEST_TOPIC
@@ -42,7 +42,7 @@ packages:
         rules:
             # Rule named "message-rule"
             # Creating the rule that links the trigger to the sequence
-            kafka-inbound-rule:
+            message-rule:
                 trigger: message-trigger
                 action: message-processing-sequence
 
