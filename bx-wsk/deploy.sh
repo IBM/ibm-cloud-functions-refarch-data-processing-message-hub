@@ -51,7 +51,7 @@ function install() {
   bx wsk action create data-processing-message-hub/message-processing-sequence --sequence data-processing-message-hub/receive-consume,data-processing-message-hub/transform-produce
 
   echo "Creating the  message-rule rule that links the trigger to the sequence"
-  bx wsk rule create message-rule message-trigger message-processing-sequence
+  bx wsk rule create message-rule message-trigger data-processing-message-hub/message-processing-sequence
 
   echo -e "Install Complete"
 }
