@@ -31,9 +31,8 @@ Behind the scenes, the UI uses `wskdeploy`, which you can also use directly from
 
 This approach will deploy the Cloud Functions actions, triggers, and rules using the runtime-specific manifest file available in this repository.
 
-- [Log into the IBM Cloud](https://console.bluemix.net/openwhisk/).
-- Download the latest `bx` CLI and Cloud Functions plugin.
-- Download the latest `wskdeploy` CLI from the [release page](https://github.com/apache/incubator-openwhisk-wskdeploy/releases) of the [openwhisk-wskdeploy](https://github.com/apache/incubator-openwhisk-wskdeploy) project.
+- Download the latest [`bx` CLI and Cloud Functions plugin](https://console.bluemix.net/openwhisk/learn/cli).
+- Download the latest [`wskdeploy` CLI](https://github.com/apache/incubator-openwhisk-wskdeploy/releases).
 - Provision an [IBM Message Hub](https://console.ng.bluemix.net/catalog/services/message-hub) instance, and name it `kafka-broker`. On the "Manage" tab of your Message Hub console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
 - Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
@@ -46,7 +45,7 @@ cd ibm-cloud-functions-refarch-data-processing-message-hub
 
 # Make service credentials available to your environment
 source local.env
-wsk package refresh
+bx wsk package refresh
 
 # Deploy the packages, actions, triggers, and rules using your preferred language
 cd runtimes/nodejs # Or runtimes/[php|python|swift]

@@ -46,7 +46,7 @@ Send a message with a set of events to process.
 
 ```bash
 # Produce a message, will trigger the sequence of actions
-DATA=$( base64 events.json | tr -d '\n' | tr -d '\r' )
+DATA=$( base64 ../events.json | tr -d '\n' | tr -d '\r' )
 
 bx wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
   --param topic $SRC_TOPIC \
@@ -102,7 +102,8 @@ bx wsk action create data-processing-message-hub/transform-produce ../runtimes/n
 Declare a linkage between the `receive-consume` and `transform-produce` in a sequence named `message-processing-sequence`.
 
 ```bash
-bx wsk action create message-processing-sequence --sequence receive-consume,transform-produce
+bx wsk action create data-processing-message-hub/message-processing-sequence \
+  --sequence data-processing-message-hub/receive-consume,data-processing-message-hub/transform-produce
 ```
 
 ### 5.5 Create rule that links trigger to sequence
@@ -110,14 +111,14 @@ bx wsk action create message-processing-sequence --sequence receive-consume,tran
 Declare a rule named `message-rule` that links the trigger `message-trigger` to the sequence named `message-processing-sequence`.
 
 ```bash
-bx wsk rule create message-rule message-trigger message-processing-sequence
+bx wsk rule create message-rule message-trigger data-processing-message-hub/message-processing-sequence
 ```
 
 ### 5.6 Test new message events
 
 ```bash
 # Produce a message, will trigger the sequence
-DATA=$( base64 events.json | tr -d '\n' | tr -d '\r' )
+DATA=$( base64 ../events.json | tr -d '\n' | tr -d '\r' )
 
 bx wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
   --param topic $SRC_TOPIC \

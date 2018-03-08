@@ -56,7 +56,6 @@ function install() {
   echo -e "Install Complete"
 }
 
-
 function uninstall() {
   echo -e "Uninstalling..."
 
