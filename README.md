@@ -23,23 +23,24 @@ One function, or action, is triggered by message streams of one or more data rec
 
 ## Deploy through the IBM Cloud Functions console user interface
 
-Choose "[Start Creating](https://console.bluemix.net/openwhisk/create)" and select "Deploy template" then [This template] from the list. A wizard will then take you through configuration and connection to event sources step-by-step.
+Choose "[Start Creating](https://console.bluemix.net/openwhisk/create)" and select "Deploy template" then "Message Hub Events" from the list. A wizard will then take you through configuration and connection to event sources step-by-step.
 
 Behind the scenes, the UI uses `wskdeploy`, which you can also use directly from the CLI by following the steps in the next section.
 
 ## Deploy using the `wskdeploy` command line tool
 
-This approach deploy the Cloud Functions with one command driven by the runtime-specific manifest file available in this repository.
+This approach will deploy the Cloud Functions actions, triggers, and rules using the runtime-specific manifest file available in this repository.
 
-- Download the latest `bx` CLI and Cloud Functions plugins and log into the IBM Cloud.
-- Download the latest `wskdeploy` from the [release page](https://github.com/apache/incubator-openwhisk-wskdeploy/releases) of the [openwhisk-wskdeploy](https://github.com/apache/incubator-openwhisk-wskdeploy) project.
-- Provision a [Service](https://console.ng.bluemix.net/catalog/services/) instance.
-- Copy `template.local.env` to a new file named `local.env` and update the `SERVICE_HOSTNAME`, `SERVICE_USERNAME`, `SERVICE_PASSWORD` and `SERVICE_DATABASE` for your Service instance.
+- [Log into the IBM Cloud](https://console.bluemix.net/openwhisk/).
+- Download the latest `bx` CLI and Cloud Functions plugin.
+- Download the latest `wskdeploy` CLI from the [release page](https://github.com/apache/incubator-openwhisk-wskdeploy/releases) of the [openwhisk-wskdeploy](https://github.com/apache/incubator-openwhisk-wskdeploy) project.
+- Provision an [IBM Message Hub](https://console.ng.bluemix.net/catalog/services/message-hub) instance, and name it `kafka-broker`. On the "Manage" tab of your Message Hub console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
+- Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
-### Deployment
+### Deploy
 
 ```bash
-# Get a local copy of this repository
+# Clone a local copy of this repository
 git clone https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub.git
 cd ibm-cloud-functions-refarch-data-processing-message-hub
 
@@ -67,7 +68,7 @@ wskdeploy undeploy
 
 ### Deploy with IBM Continuous Delivery
 
-[This approach sets up a continuous delivery pipeline that redeploys on changes to a personal clone of this repository](bx-cd/README.md). It may be of interest to setting up an overall software delivery lifecycle around Cloud Functions.
+[This approach sets up a continuous delivery pipeline that redeploys on changes to a personal clone of this repository](bx-cd/README.md). It may be of interest to setting up an overall software delivery lifecycle around Cloud Functions that redeploys automatically when changes are pushed to a Git repository.
 
 ## License
 
