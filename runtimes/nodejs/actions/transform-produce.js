@@ -26,7 +26,7 @@ function transform(events) {
   }
   average = average / events.length;
   var result = {
-    "agent": "OpenWhisk action",
+    "agent": "IBM Cloud Function action",
     "events_count": events.length,
     "avg_velocity": average
   };
@@ -40,7 +40,7 @@ function transform(events) {
 function main(params) {
   console.log("DEBUG: Received message as input: " + JSON.stringify(params));
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!params.topic || !params.kafka || !params.events || !params.events[0]) {
       reject("Error: Invalid arguments. Must include topic, events[], kafka service name.");
     }
