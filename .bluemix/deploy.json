@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions Toolchain Deployment",
-    "description": "IBM Cloud Function reference architecture template wit toolchain",
+    "description": "IBM Cloud Function reference architecture template with toolchain",
     "longDescription": "Information entered here will be used at deployment time.",
     "type": "object",
     "properties": {
