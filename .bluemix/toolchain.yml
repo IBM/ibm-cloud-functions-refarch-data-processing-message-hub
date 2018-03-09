@@ -8,7 +8,7 @@ required:
 git-refarch-data-processing-message-hub:
   service_id: githubpublic
   parameters:
-    repo_name: "ibm-cloud-functions-refarch-data-processing-message-hub-{{name}}"
+    repo_name: "ibm-cloud-functions-refarch-data-processing-message-hub"
     repo_url: "https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub"
     type: clone
     has_issues: true

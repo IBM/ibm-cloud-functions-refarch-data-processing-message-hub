@@ -27,15 +27,19 @@
         },
         "message-hub-api-key": {
             "description": "IBM Message Hub name, copy from the IBM Cloud console Message Hub instance credentials",
-            "type": "string"
+            "type": "password"
         },
         "message-hub-user": {
             "description": "IBM Message Hub name, copy from the IBM Cloud console IBM Message Hub instance credentials",
             "type": "string"
         },
+        "message-hub-password": {
+            "description": "IBM Message Hub password, copy from the IBM Cloud console IBM Message Hub instance credentials",
+            "type": "password"
+        },
         "message-hub-rest-url": {
             "description": "IBM Message Hub REST URL, copy from Message Hub console",
-            "type": "password"
+            "type": "string"
         },
         "message-hub-admin-url": {
             "description": "IBM Message Hub Admin URL, copy from Message Hub console",

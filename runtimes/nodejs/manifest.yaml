@@ -15,6 +15,9 @@
 #   SRC_TOPIC
 #   DEST_TOPIC
 packages:
+    name: hello_world_package
+    version: 1.0
+    license: Apache-2.0
     data-processing-message-hub:
         actions:
             # Action named "receive-consume"
