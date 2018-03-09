@@ -15,9 +15,6 @@
 #   SRC_TOPIC
 #   DEST_TOPIC
 packages:
-    name: ibm-cloud-functions-refarch-data-processing-message-hub
-    version: 1.0
-    license: Apache-2.0
     data-processing-message-hub:
         actions:
             # Action named "receive-consume"
@@ -25,6 +22,7 @@ packages:
             receive-consume:
                 function: actions/receive-consume.js
             # Action named "transform-produce"
+            # Creating action as a regular Node.js action
             transform-produce:
                 function: actions/transform-produce.js
                 inputs:
