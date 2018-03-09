@@ -52,11 +52,11 @@ stages:
       set -e
 
       # Write the Cloud Functions specific values to .wskprops
-      echo "APIHOST=$CLOUD_FUNCTIONS_API_ENDPOINT" > "/home/pipeline/.wskprops"
-      echo "NAMESPACE=_" >> "/home/pipeline/.wskprops"
-      echo "APIVERSION=v1" >> "/home/pipeline/.wskprops"
-      echo "AUTH=$CLOUD_FUNCTIONS_API_KEY" >> "/home/pipeline/.wskprops"
-      echo "APIGW_ACCESS_TOKEN=" >> "/home/pipeline/.wskprops"
+      echo "APIHOST=$CLOUD_FUNCTIONS_API_ENDPOINT" > "$HOME/.wskprops"
+      echo "NAMESPACE=_" >> "$HOME/.wskprops"
+      echo "APIVERSION=v1" >> "$HOME/.wskprops"
+      echo "AUTH=$CLOUD_FUNCTIONS_API_KEY" >> "$HOME/.wskprops"
+      echo "APIGW_ACCESS_TOKEN=" >> "$HOME/.wskprops"
 
       # Map the expected environment variables to what's been supplied
       export KAFKA_INSTANCE=$MESSAGE_HUB_KAFKA_INSTANCE

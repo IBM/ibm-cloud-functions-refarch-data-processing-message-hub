@@ -17,11 +17,11 @@
 set -e
 
 # Write the Cloud Functions specific values to .wskprops
-echo "APIHOST=$APIHOST" > "/home/pipeline/.wskprops"
-echo "NAMESPACE=$NAMESPACE" >> "/home/pipeline/.wskprops"
-echo "APIVERSION=$APIVERSION" >> "/home/pipeline/.wskprops"
-echo "AUTH=$AUTH" >> "/home/pipeline/.wskprops"
-echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "~/.wskprops"
+echo "APIHOST=$APIHOST" > "$HOME/.wskprops"
+echo "NAMESPACE=$NAMESPACE" >> "$HOME/.wskprops"
+echo "APIVERSION=$APIVERSION" >> "$HOME/.wskprops"
+echo "AUTH=$AUTH" >> "$HOME/.wskprops"
+echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "$HOME/.wskprops"
 
 # Download IBM Cloud CLI and Cloud Functions plugin (already in the build container)
 curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
