@@ -49,13 +49,29 @@ stages:
       application: messagehubdataprocessing
     script: |+
       #!/bin/bash
-
       set -x
       set +e
 
-      # Download IBM Cloud CLI and Cloud Functions plugin 
+      # Write the Cloud Functions specific values to .wskprops
+      export APIHOST=openwhisk.ng.bluemix.net
+      export NAMESPACE=_
+      export APIVERSION=v1
+      export AUTH=$CLOUD_FUNCTIONS_API_KEY
+      export APIGW_ACCESS_TOKEN=
+      echo "APIHOST=$APIHOST" > "/home/pipeline/.wskprops"
+      echo "NAMESPACE=$NAMESPACE" >> "/home/pipeline/.wskprops"
+      echo "APIVERSION=$APIVERSION" >> "/home/pipeline/.wskprops"
+      echo "AUTH=$AUTH" >> "/home/pipeline/.wskprops"
+      echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "/home/pipeline/.wskprops"
+
+      # Map the expected environment variables to what's been supplied
+      export KAFKA_INSTANCE=$MESSAGE_HUB_KAFKA_INSTANCE
+      export SRC_TOPIC=$MESSAGE_HUB_SRC_TOPIC
+      export DEST_TOPIC=$MESSAGE_HUB_DEST_TOPIC
+
+      # Download IBM Cloud CLI and Cloud Functions plugin (already in the build container)
       # curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
-      # bx plugin install Cloud-Functions -r Bluemix
+      # bx plugin install Cloud-Functions -r Bluemix -f
 
       # Download the wskdeploy CLI
       curl -OL https://github.com/apache/incubator-openwhisk-wskdeploy/releases/download/latest/wskdeploy-latest-linux-amd64.tgz
@@ -63,18 +79,10 @@ stages:
       chmod 755 wskdeploy
 
       # Make service credentials available to your environment
-      # source local.env
-
-      # Expects these environment variables
-      export APIHOST=openwhisk.ng.bluemix.net
-      export NAMESPACE=_
-      export APIVERSION=v1
-      export AUTH=$CLOUD_FUNCTIONS_API_KEY
-      export APIGW_ACCESS_TOKEN=
-
-      # bx wsk package refresh
+      bx wsk package refresh
 
       # Deploy the packages, actions, triggers, and rules using your preferred language
+      mv wskdeploy runtimes/nodejs/
       cd runtimes/nodejs # Or runtimes/[php|python|swift]
       ./wskdeploy
 
