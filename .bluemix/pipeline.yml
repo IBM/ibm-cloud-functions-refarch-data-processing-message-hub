@@ -54,54 +54,29 @@ stages:
       set +e
 
       # Download IBM Cloud CLI and Cloud Functions plugin 
-      if [ ! -f ./wsk ]; then
-          wget https://openwhisk.ng.bluemix.net/cli/go/download/linux/amd64/wsk
-          chmod u+x wsk
-      fi
+      # curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
+      # bx plugin install Cloud-Functions -r Bluemix
 
-      # Set the IBM Cloud Functions API key
-      ./wsk property set --apihost ${CLOUD_FUNCTIONS_API_ENDPOINT} --auth ${CLOUD_FUNCTIONS_API_KEY}
+      # Download the wskdeploy CLI
+      curl -OL https://github.com/apache/incubator-openwhisk-wskdeploy/releases/download/latest/wskdeploy-latest-linux-amd64.tgz
+      tar xf wskdeploy-latest-linux-amd64.tgz
+      chmod 755 wskdeploy
 
-      # Make sure the IBM Message Hub instance is configured
-      ./wsk package refresh
+      # Make service credentials available to your environment
+      # source local.env
 
-      echo "Creating a clean deployment"
-      ./wsk rule delete --disable kafka-inbound-rule
-      ./wsk trigger delete kafka-trigger
-      ./wsk action delete kafka-sequence
-      ./wsk action delete mhget-action
-      ./wsk action delete mhpost-action
-      sleep 1
+      # Expects these environment variables
+      export APIHOST=openwhisk.ng.bluemix.net
+      export NAMESPACE=_
+      export APIVERSION=v1
+      export AUTH=$CLOUD_FUNCTIONS_API_KEY
+      export APIGW_ACCESS_TOKEN=
 
-      set -e
+      # bx wsk package refresh
 
-      echo "Creating the kafka-trigger trigger"
-      ./wsk trigger create kafka-trigger \
-        --feed /_/Bluemix_${MESSAGE_HUB_KAFKA_INSTANCE}_Credentials-1/messageHubFeed \
-        --param isJSONData true \
-        --param topic ${MESSAGE_HUB_SRC_TOPIC}
-
-      echo "Creating mhget-action action as a regular Node.js action"
-      ./wsk action create mhget-action actions/mhget/mhget.js
-
-      echo "Creating mhpost-action action as a zipped Node.js action, as it contains dependencies"
-      DIR=`pwd`
-      cd actions/mhpost
-      npm install --loglevel=error
-      zip -r mhpost.zip *
-      cd ${DIR}
-      ./wsk action create mhpost-action actions/mhpost/mhpost.zip --kind nodejs:6 \
-        --param api_key ${MESSAGE_HUB_API_KEY} \
-        --param kafka_rest_url ${MESSAGE_HUB_KAFKA_REST_URL} \
-        --param topic ${MESSAGE_HUB_DEST_TOPIC}
-
-      echo "Creating the kafka-sequence sequence that links the get and post actions"
-      ./wsk action create kafka-sequence --sequence mhget-action,mhpost-action
-
-      echo "Creating the kafka-inbound-rule rule that links the trigger to the sequence"
-      ./wsk rule create kafka-inbound-rule kafka-trigger kafka-sequence
-
-      echo "Test that everything is working ... TODO"
+      # Deploy the packages, actions, triggers, and rules using your preferred language
+      cd runtimes/nodejs # Or runtimes/[php|python|swift]
+      ./wskdeploy
 
 hooks:
 - enabled: true

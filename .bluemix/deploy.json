@@ -6,11 +6,11 @@
     "type": "object",
     "properties": {
         "deploy-region": {
-            "description": "Deploy to this Bluemix Region",
+            "description": "Deploy to this IBM Cloud Region",
             "type": "string"
         },
         "deploy-org": {
-            "description": "Deploy to this Bluemix Organization",
+            "description": "Deploy to this IBM Cloud Organization",
             "type": "string"
         },
         "deploy-space": {
@@ -137,7 +137,12 @@
         {
             "type": "table",
             "columnCount": 4,
-            "widths": ["15%", "28%", "28%", "28%"],
+            "widths": [
+                "15%",
+                "28%",
+                "28%",
+                "28%"
+            ],
             "items": [
                 {
                     "type": "label",

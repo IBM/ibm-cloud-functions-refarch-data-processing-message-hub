@@ -75,7 +75,7 @@ Expected output (merge all events from multiple 'messages' into one big 'events'
 function main(params) {
   console.log("DEBUG: Received the following message as input: " + JSON.stringify(params));
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (!params.messages || !params.messages[0] ||
       !params.messages[0].value || !params.messages[0].value.events) {
       reject("Invalid arguments. Must include 'messages' JSON array with 'value' field");

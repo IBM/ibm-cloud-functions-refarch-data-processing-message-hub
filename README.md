@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/IBM/ibm-cloud-functions-refarch-data-processing-message-hub.svg?branch=master)](https://travis-ci.org/IBM/ibm-cloud-functions-refarch-data-processing-message-hub)
 
-This project shows how serverless, event-driven architectures execute code in response to messages or to handle streams of data records. No code runs until messages arrive on the IBM Message Hub (powered by Apache Kafka) topic. When that happens, application instances are started to match the load needed by the stream of messages exactly.
+This project shows how serverless, event-driven architectures built with IBM Cloud Functions can execute code in response to messages or to handle streams of data records. No code runs until messages arrive via the IBM Message Hub (powered by Apache Kafka) topic. When that happens, function instances are started to match the load needed by the stream of messages exactly.
 
 In addition to using cloud resources efficiently, this means that developers can build and deploy applications more quickly. You can learn more about the benefits of building a serverless architecture for this use case in the accompanying [IBM Code Pattern](https://developer.ibm.com/code/patterns/respond-messages-handle-streams/).
 
@@ -39,7 +39,7 @@ This approach will deploy the Cloud Functions actions, triggers, and rules using
 - Provision an [IBM Message Hub](https://console.ng.bluemix.net/catalog/services/message-hub) instance, and name it `kafka-broker`. On the "Manage" tab of your Message Hub console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
 - Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
-### Deploy
+### Deploy with `wskdeploy`
 
 ```bash
 # Clone a local copy of this repository
@@ -55,7 +55,7 @@ cd runtimes/nodejs # Or runtimes/[php|python|swift]
 wskdeploy
 ```
 
-### Undeploy
+### Undeploy with `wskdeploy`
 
 ```bash
 # Deploy the packages, actions, triggers, and rules
