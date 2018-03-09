@@ -21,7 +21,7 @@ echo "APIHOST=$APIHOST" > "/home/pipeline/.wskprops"
 echo "NAMESPACE=$NAMESPACE" >> "/home/pipeline/.wskprops"
 echo "APIVERSION=$APIVERSION" >> "/home/pipeline/.wskprops"
 echo "AUTH=$AUTH" >> "/home/pipeline/.wskprops"
-echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "/home/pipeline/.wskprops"
+echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "~/.wskprops"
 
 # Download IBM Cloud CLI and Cloud Functions plugin (already in the build container)
 curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
