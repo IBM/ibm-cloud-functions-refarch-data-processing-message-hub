@@ -38,8 +38,6 @@ bx wsk package refresh
 # Deploy the packages, actions, triggers, and rules starting from a clean slate
 mv wskdeploy runtimes/nodejs/
 cd runtimes/nodejs # Or runtimes/[php|python|swift]
-./wskdeploy undeploy
-sleep 5
 ./wskdeploy
 sleep 5
 ./wskdeploy undeploy
