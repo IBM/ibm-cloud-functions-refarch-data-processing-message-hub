@@ -74,8 +74,6 @@ stages:
       # Deploy the packages, actions, triggers, and rules using your preferred language
       mv wskdeploy runtimes/nodejs/
       cd runtimes/nodejs # Or runtimes/[php|python|swift]
-      ./wskdeploy undeploy
-      sleep 5
       ./wskdeploy
 
 hooks:
