@@ -32,7 +32,7 @@ bx login -a api.ng.bluemix.net -o "$YOUR_ORG" -s "$YOUR_SPACE"
 ./deploy.sh --install
 ```
 
-> **Note**: If you see any error messages, refer to the [Troubleshooting](#troubleshooting) section below. You can also explore [Alternative deployment methods](#alternative-deployment-methods).
+> **Note**: If you see any error messages, refer to the [Troubleshooting](#troubleshooting) section below.
 
 ## 3. Test new message events
 
