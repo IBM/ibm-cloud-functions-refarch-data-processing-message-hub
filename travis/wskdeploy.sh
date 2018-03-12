@@ -25,6 +25,7 @@ echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "$HOME/.wskprops"
 
 # Download IBM Cloud CLI and Cloud Functions plugin (already in the build container)
 curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
+bx api target https://api.ng.bluemix.net
 bx plugin install Cloud-Functions -r Bluemix -f
 
 # Download the wskdeploy CLI
