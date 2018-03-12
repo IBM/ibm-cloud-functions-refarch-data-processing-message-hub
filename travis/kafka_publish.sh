@@ -15,8 +15,7 @@
 # limitations under the License.
 ##############################################################################
 
-pwd
-source ../local.env
+source ../../local.env
 
 #############################################################################
 # Posts a message to a designated topic
@@ -43,7 +42,7 @@ post()
 # MAIN
 #############################################################################
 echo "Encoding payload from file 'events.json'..."
-PAYLOAD=$( base64 ../events.json | tr -d '\n' | tr -d '\r' )   # Note that it is important to disable line wrapping
+PAYLOAD=$( base64 ../../events.json | tr -d '\n' | tr -d '\r' )   # Note that it is important to disable line wrapping
 
 NUM_MSGS=2
 for ((i=0; i<$NUM_MSGS; i++)); do
