@@ -43,11 +43,11 @@ cd runtimes/nodejs # Or runtimes/[php|python|swift]
 # Test after installing prereqs
 sudo apt-get install jq
 
-./kafka_publish.sh
+./travis/kafka_publish.sh
 
 sleep 3
 
-CONSUME_OUTPUT=`./kafka_consume.sh`
+CONSUME_OUTPUT=`./travis/kafka_consume.sh`
 
 KAFKA_MESSAGE=`echo "$CONSUME_OUTPUT" | tail -3 | head -1`
 
