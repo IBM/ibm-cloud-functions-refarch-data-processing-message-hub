@@ -53,6 +53,9 @@ CONSUME_OUTPUT=`../../travis/kafka_consume.sh`
 
 KAFKA_MESSAGE=`echo "$CONSUME_OUTPUT" | tail -3 | head -1`
 
+echo "$CONSUME_OUTPUT"
+echo "$KAFKA_MESSAGE"
+
 MSG_AGENT=`echo $KAFKA_MESSAGE | jq -r '.agent'`
 if [[ $MSG_AGENT == "IBM Cloud Function action" ]]
 then
