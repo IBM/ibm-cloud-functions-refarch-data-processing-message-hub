@@ -47,7 +47,7 @@ sudo apt-get install jq
 
 ../../travis/kafka_publish.sh
 
-sleep 3
+sleep 5
 
 CONSUME_OUTPUT=`../../travis/kafka_consume.sh`
 
