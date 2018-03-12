@@ -45,6 +45,10 @@ cd runtimes/nodejs # Or runtimes/[php|python|swift]
 # Test after installing prereqs
 sudo apt-get install jq
 
+pwd
+ls -Flat
+ls -Flat ./travis
+
 ./travis/kafka_publish.sh
 
 sleep 3
