@@ -15,7 +15,7 @@
 # limitations under the License.
 ##############################################################################
 
-source local.env
+source ../local.env
 
 #############################################################################
 # Takes input message and decodes the base64 to human readable format
