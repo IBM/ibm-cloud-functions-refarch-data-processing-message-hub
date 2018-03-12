@@ -2,23 +2,23 @@
 
 [![Build Status](https://travis-ci.org/IBM/ibm-cloud-functions-refarch-data-processing-message-hub.svg?branch=master)](https://travis-ci.org/IBM/ibm-cloud-functions-refarch-data-processing-message-hub)
 
-This project shows how serverless, event-driven architectures built with IBM Cloud Functions can execute code in response to messages or to handle streams of data records. No code runs until messages arrive via the IBM Message Hub (powered by Apache Kafka) topic. When that happens, function instances are started to match the load needed by the stream of messages exactly.
+This project deploys a reference architecture with IBM Cloud Functions to execute code in response to messages or to handle streams of data records. No code runs until messages arrive via IBM Message Hub (powered by Apache Kafka). When that happens, function instances are started and automatically scale to match the load needed to handle the stream of messages.
 
-In addition to using cloud resources efficiently, this means that developers can build and deploy applications more quickly. You can learn more about the benefits of building a serverless architecture for this use case in the accompanying [IBM Code Pattern](https://developer.ibm.com/code/patterns/respond-messages-handle-streams/).
+You can learn more about the benefits of building a serverless architecture for this use case in the accompanying [IBM Code Pattern](https://developer.ibm.com/code/patterns/respond-messages-handle-streams/).
 
 Deploy this reference architecture:
 
 - Through the [IBM Cloud Functions user interface](#deploy-through-the-ibm-cloud-functions-console-user-interface).
 - Or by using [command line tools on your own system](#deploy-using-the-wskdeploy-command-line-tool).
 
-If you haven't already, sign up for an IBM Cloud account and go to the [Cloud Functions dashboard](https://console.bluemix.net/openwhisk/) to explore other [reference architecture templates](https://github.com/topics/ibm-cloud-functions-refarch) and download command line tools, if needed.
+If you haven't already, sign up for an IBM Cloud account then go to the [Cloud Functions dashboard](https://console.bluemix.net/openwhisk/) to explore other [reference architecture templates](https://github.com/topics/ibm-cloud-functions-refarch) and download command line tools, if needed.
 
 ## Included components
 
 - IBM Cloud Functions (powered by Apache OpenWhisk)
 - IBM Message Hub (powered by Apache Kafka)
 
-The application demonstrates two IBM Cloud Functions (based on Apache OpenWhisk) that read and write messages with IBM Message Hub (based on Apache Kafka). The use case demonstrates how actions work with data services and execute logic in response to message events.
+The application deploys two IBM Cloud Functions (based on Apache OpenWhisk) that read from and write messages to IBM Message Hub (based on Apache Kafka). This demonstrates how to work with data services and execute logic in response to message events.
 
 One function, or action, is triggered by message streams of one or more data records. These records are piped to another action in a sequence (a way to link actions declaratively in a chain). The second action aggregates the message and posts a transformed summary message to another topic.
 
@@ -28,7 +28,7 @@ One function, or action, is triggered by message streams of one or more data rec
 
 Choose "[Start Creating](https://console.bluemix.net/openwhisk/create)" and select "Deploy template" then "Message Hub Events" from the list. A wizard will then take you through configuration and connection to event sources step-by-step.
 
-Behind the scenes, the UI uses `wskdeploy`, which you can also use directly from the CLI by following the steps in the next section.
+Behind the scenes, the UI uses the `wskdeploy` tool, which you can also use directly from the CLI by following the steps in the next section.
 
 ## Deploy using the `wskdeploy` command line tool
 
