@@ -16,4 +16,4 @@ language: bash
 sudo: required
 
 script:
-  - ./travis/build.sh
+  - ./travis/wskdeploy.sh

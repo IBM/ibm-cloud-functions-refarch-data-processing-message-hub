@@ -39,5 +39,26 @@ bx wsk package refresh
 mv wskdeploy runtimes/nodejs/
 cd runtimes/nodejs # Or runtimes/[php|python|swift]
 ./wskdeploy
-sleep 5
-./wskdeploy undeploy
+
+# Test after installing prereqs
+apt-get install jq
+
+./kafka_publish.sh
+
+sleep 3
+
+CONSUME_OUTPUT=`./kafka_consume.sh`
+
+KAFKA_MESSAGE=`echo "$CONSUME_OUTPUT" | tail -3 | head -1`
+
+MSG_AGENT=`echo $KAFKA_MESSAGE | jq -r '.agent'`
+if [[ $MSG_AGENT == "IBM Cloud Function action" ]]
+then
+	echo "Found the message we were expecting"
+    ./wskdeploy undeploy
+else
+	echo "Something went wrong"
+	./wskdeploy undeploy
+	exit -1
+fi
+
