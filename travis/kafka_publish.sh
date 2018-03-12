@@ -27,6 +27,7 @@ post()
 {
   local TOPIC=$1
   local DATA='{"records":[{"value":"'${2}'"}]}'
+  echo $DATA
 
   # See details here: http://docs.confluent.io/1.0/kafka-rest/docs/intro.html
   # Produce a message using PAYLOAD to the kafka topic TOPIC
@@ -40,12 +41,13 @@ post()
 # MAIN
 #############################################################################
 echo "Encoding payload from file 'events.json'..."
+cat ../../events.json
 PAYLOAD=$( base64 ../../events.json | tr -d '\n' | tr -d '\r' )   # Note that it is important to disable line wrapping
 
 NUM_MSGS=2
 for ((i=0; i<$NUM_MSGS; i++)); do
   echo -e "\nPosting a message #$i into the topic '$SRC_TOPIC'"
-  post $SRC_TOPIC "$PAYLOAD"    # Note that PAYLOAD has spaces in in, so need to pass it in quotes
+  post $SRC_TOPIC "$PAYLOAD"    # Note that PAYLOAD has spaces in it, so need to pass it in quotes
 done
 
 echo -e "\nAll done!"
