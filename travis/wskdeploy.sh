@@ -27,8 +27,7 @@ echo "APIGW_ACCESS_TOKEN=$APIGW_ACCESS_TOKEN" >> "$HOME/.wskprops"
 curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
 bx plugin install Cloud-Functions -r Bluemix -f
 bx api https://api.ng.bluemix.net
-bx target -o $BX_USERNAME -s refarch
-bx login -u $BX_USERNAME -p "$BX_PASSWORD"
+bx login -u $BX_USERNAME -p "$BX_PASSWORD" -o $BX_USERNAME -s refarch
 
 # Download the wskdeploy CLI
 curl -OL https://github.com/apache/incubator-openwhisk-wskdeploy/releases/download/latest/wskdeploy-latest-linux-amd64.tgz
