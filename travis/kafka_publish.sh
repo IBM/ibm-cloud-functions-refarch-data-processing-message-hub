@@ -25,16 +25,16 @@
 #############################################################################
 post()
 {
-  local TOPIC=$1
-  local DATA='{"records":[{"value":"'${2}'"}]}'
-  echo $DATA
-
-  # See details here: http://docs.confluent.io/1.0/kafka-rest/docs/intro.html
-  # Produce a message using PAYLOAD to the kafka topic TOPIC
-  curl -X POST -H "Content-Type: application/vnd.kafka.binary.v1+json" \
-    -H "X-Auth-Token: $API_KEY" \
-    --data "$DATA" \
-    "$KAFKA_REST_URL/topics/$TOPIC"
+    local TOPIC=$1
+    local DATA='{"records":[{"value":"'${2}'"}]}'
+    echo $DATA
+    
+    # See details here: http://docs.confluent.io/1.0/kafka-rest/docs/intro.html
+    # Produce a message using PAYLOAD to the kafka topic TOPIC
+    curl -X POST -H "Content-Type: application/vnd.kafka.binary.v1+json" \
+        -H "X-Auth-Token: $API_KEY" \
+        --data "$DATA" \
+        "$KAFKA_REST_URL/topics/$TOPIC"
 }
 
 #############################################################################
@@ -46,8 +46,8 @@ PAYLOAD=$( base64 ../../events.json | tr -d '\n' | tr -d '\r' )   # Note that it
 
 NUM_MSGS=2
 for ((i=0; i<$NUM_MSGS; i++)); do
-  echo -e "\nPosting a message #$i into the topic '$SRC_TOPIC'"
-  post $SRC_TOPIC "$PAYLOAD"    # Note that PAYLOAD has spaces in it, so need to pass it in quotes
+    echo -e "\nPosting a message #$i into the topic '$SRC_TOPIC'"
+    post $SRC_TOPIC "$PAYLOAD"    # Note that PAYLOAD has spaces in it, so need to pass it in quotes
 done
 
 echo -e "\nAll done!"

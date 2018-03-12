@@ -23,14 +23,15 @@
 #       DECODED - human readable string for the "value" part of the message - saved in the DECODED global variable
 #############################################################################
 DECODED="Nothing to consume. Try again."
-decode_response() {
-  echo $1
-  if [ $1 != "[]" ]; then
-    local ARG=$1
-    local ENCODED=${1##*,\"value\":\"}
-    local ENCODED=${ENCODED%%\",\"partition\":*}
-    DECODED=`echo $ENCODED | base64 --decode`
-  fi
+decode_response()
+{
+    echo $1
+    if [ $1 != "[]" ]; then
+        local ARG=$1
+        local ENCODED=${1##*,\"value\":\"}
+        local ENCODED=${ENCODED%%\",\"partition\":*}
+        DECODED=`echo $ENCODED | base64 --decode`
+    fi
 }
 
 #############################################################################
@@ -42,13 +43,13 @@ decode_response() {
 #############################################################################
 create_consumer()
 {
-  local CONSUMER=$1
-  # Create a consumer for binary data, starting at the beginning of the topic's
-  # log. Then consume some data from a topic.
-  curl -X POST -H "Content-Type: application/vnd.kafka.v1+json" \
-    -H "X-Auth-Token: $API_KEY" \
-    --data '{"id": "my_instance", "format": "binary", "auto.offset.reset": "smallest"}' \
-    $KAFKA_REST_URL/$CONSUMER
+    local CONSUMER=$1
+    # Create a consumer for binary data, starting at the beginning of the topic's
+    # log. Then consume some data from a topic.
+    curl -X POST -H "Content-Type: application/vnd.kafka.v1+json" \
+        -H "X-Auth-Token: $API_KEY" \
+        --data '{"id": "my_instance", "format": "binary", "auto.offset.reset": "smallest"}' \
+        $KAFKA_REST_URL/$CONSUMER
 }
 
 #############################################################################
@@ -61,11 +62,11 @@ create_consumer()
 #############################################################################
 consume()
 {
-  local TOPIC=$1
-  local CONSUMER=$2
-  RESULT=`curl -s -X GET -H "Accept: application/vnd.kafka.binary.v1+json" \
-    -H "X-Auth-Token: $API_KEY" \
-    $KAFKA_REST_URL/$CONSUMER/instances/my_instance/topics/$TOPIC`
+    local TOPIC=$1
+    local CONSUMER=$2
+    RESULT=`curl -s -X GET -H "Accept: application/vnd.kafka.binary.v1+json" \
+        -H "X-Auth-Token: $API_KEY" \
+        $KAFKA_REST_URL/$CONSUMER/instances/my_instance/topics/$TOPIC`
 }
 
 #############################################################################
