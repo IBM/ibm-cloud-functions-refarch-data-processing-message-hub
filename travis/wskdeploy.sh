@@ -30,7 +30,7 @@ bx api https://api.ng.bluemix.net
 bx login -u $BX_USERNAME -p "$BX_PASSWORD" -o $BX_USERNAME -s refarch
 
 # Download the wskdeploy CLI
-curl -OL https://github.com/apache/incubator-openwhisk-wskdeploy/releases/download/latest/wskdeploy-latest-linux-amd64.tgz
+curl -OL https://github.com/apache/incubator-openwhisk-wskdeploy/releases/download/latest/openwhisk_wskdeploy-latest-linux-arm64.tgz
 tar xf wskdeploy-latest-linux-amd64.tgz
 chmod 755 wskdeploy
 
