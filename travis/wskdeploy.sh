@@ -43,6 +43,7 @@ cd runtimes/nodejs # Or runtimes/[php|python|swift]
 ./wskdeploy
 
 # Test after installing prereqs
+sudo apt-get update
 sudo apt-get install jq
 
 ../../travis/kafka_publish.sh
