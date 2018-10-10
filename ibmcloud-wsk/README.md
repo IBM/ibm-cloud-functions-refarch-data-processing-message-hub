@@ -10,15 +10,15 @@ As an alternative to this end-to-end example, you might also consider the more [
 
 ## Steps
 
-1. [Configure IBM Message Hub](#1-configure-ibm-message-hub)
+1. [Configure IBM Event Streams](#1-configure-ibm-message-hub)
 2. [Create IBM Cloud Functions actions, triggers, and rules](#2-create-ibm-cloud-functions-actions-triggers-and-rules)
 3. [Test new message events](#3-test-new-message-events)
 4. [Delete actions, triggers, and rules](#4-delete-actions-triggers-and-rules)
 5. [Recreate deployment manually](#5-recreate-deployment-manually)
 
-## 1. Configure IBM Message Hub
+## 1. Configure IBM Event Streams
 
-Log into the IBM Cloud, provision a [Message Hub](https://console.ng.bluemix.net/catalog/services/message-hub) instance, and name it `kafka-broker`. On the "Manage" tab of your Message Hub console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
+Log into the IBM Cloud, provision a [Event Streams](https://console.bluemix.net/catalog/services/event-streams) instance, and name it `kafka-broker`. On the "Manage" tab of your Events Streams console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
 
 Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
@@ -68,7 +68,7 @@ This section provides a deeper look into what the `deploy.sh` script executes so
 
 ### 5.1 Create Kafka message trigger
 
-Create the `message-trigger` trigger using the Message Hub packaged feed that listens for new messages. The package refresh will make the Message Hub service credentials and connection information available to OpenWhisk.
+Create the `message-trigger` trigger using the Event Streams packaged feed that listens for new messages. The package refresh will make the Event Streams service credentials and connection information available to OpenWhisk.
 
 ```bash
 ibmcloud wsk package refresh
@@ -89,7 +89,7 @@ ibmcloud wsk action create data-processing-message-hub/receive-consume ../runtim
 
 ### 5.3 Create action to aggregate and send back message
 
-Upload the `transform-produce` action. This aggregates information from the action above, and sends a summary JSON string back to another Message Hub topic.
+Upload the `transform-produce` action. This aggregates information from the action above, and sends a summary JSON string back to another Event Streams topic.
 
 ```bash
 ibmcloud wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
