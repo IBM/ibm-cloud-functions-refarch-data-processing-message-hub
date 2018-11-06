@@ -1,8 +1,8 @@
-# Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions
+# Serverless reference architecture for IBM Event Streams data processing with IBM Cloud Functions
 
 [![Build Status](https://travis-ci.org/IBM/ibm-cloud-functions-refarch-data-processing-message-hub.svg?branch=master)](https://travis-ci.org/IBM/ibm-cloud-functions-refarch-data-processing-message-hub)
 
-This project deploys a reference architecture with IBM Cloud Functions to execute code in response to messages or to handle streams of data records. No code runs until messages arrive via IBM Message Hub (powered by Apache Kafka). When that happens, function instances are started and automatically scale to match the load needed to handle the stream of messages.
+This project deploys a reference architecture with IBM Cloud Functions to execute code in response to messages or to handle streams of data records. No code runs until messages arrive via IBM Event Streams (powered by Apache Kafka). When that happens, function instances are started and automatically scale to match the load needed to handle the stream of messages.
 
 You can learn more about the benefits of building a serverless architecture for this use case in the accompanying [IBM Code Pattern](https://developer.ibm.com/code/patterns/respond-messages-handle-streams/).
 
@@ -16,9 +16,9 @@ If you haven't already, sign up for an IBM Cloud account then go to the [Cloud F
 ## Included components
 
 - IBM Cloud Functions (powered by Apache OpenWhisk)
-- IBM Message Hub (powered by Apache Kafka)
+- IBM Event Streams (powered by Apache Kafka)
 
-The application deploys two IBM Cloud Functions (based on Apache OpenWhisk) that read from and write messages to IBM Message Hub (based on Apache Kafka). This demonstrates how to work with data services and execute logic in response to message events.
+The application deploys two IBM Cloud Functions (based on Apache OpenWhisk) that read from and write messages to IBM Event Streams (based on Apache Kafka). This demonstrates how to work with data services and execute logic in response to message events.
 
 One function, or action, is triggered by message streams of one or more data records. These records are piped to another action in a sequence (a way to link actions declaratively in a chain). The second action aggregates the message and posts a transformed summary message to another topic.
 
@@ -26,7 +26,7 @@ One function, or action, is triggered by message streams of one or more data rec
 
 ## Deploy through the IBM Cloud Functions console user interface
 
-Choose "[Start Creating](https://console.bluemix.net/openwhisk/create)" and select "Deploy template" then "Message Hub Events" from the list. A wizard will then take you through configuration and connection to event sources step-by-step.
+Choose "[Start Creating](https://console.bluemix.net/openwhisk/create)" and select "Deploy template" then "Event Streams Events" from the list. A wizard will then take you through configuration and connection to event sources step-by-step.
 
 Behind the scenes, the UI uses the `wskdeploy` tool, which you can also use directly from the CLI by following the steps in the next section.
 
@@ -36,7 +36,11 @@ This approach will deploy the Cloud Functions actions, triggers, and rules using
 
 - Download the latest [`bx` CLI and Cloud Functions plugin](https://console.bluemix.net/openwhisk/learn/cli).
 - Download the latest [`wskdeploy` CLI](https://github.com/apache/incubator-openwhisk-wskdeploy/releases).
-- Provision an [IBM Message Hub](https://console.ng.bluemix.net/catalog/services/message-hub) instance, and name it `kafka-broker`. On the "Manage" tab of your Message Hub console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
+- Provision an [IBM Event Streams](https://console.bluemix.net/catalog/services/event-streams) instance, and name it `kafka-broker`. You can use the web console to create your instance, or the CLI with a command like so:
+```
+$ bx resource service-instance-create kafka-broker messagehub enterprise-3nodes-2tb us-south
+```
+Once created, on the "Manage" tab of your Event Streams console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
 - Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
 ### Deploy with `wskdeploy`
