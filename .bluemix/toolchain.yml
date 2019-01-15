@@ -1,59 +1,48 @@
----
-name: "Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions Toolchain"
-description: "Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions Application"
-version: 0.1
-required:
- - deploy
-
-git-refarch-data-processing-message-hub:
-  service_id: githubpublic
-  parameters:
-    repo_name: "ibm-cloud-functions-refarch-data-processing-message-hub"
-    repo_url: "https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub"
-    type: clone
-    has_issues: true
-
-pipeline-refarch-data-processing-message-hub:
-  service_id: pipeline
-  hidden: [form, description]
-  parameters:
-    name: "refarch-data-processing-message-hub"
-    ui-pipeline: true
-    services: ["git-refarch-data-processing-message-hub"]
-    configuration:
-      content: $file(pipeline.yml)
-      env:
-       REPO: "git-refarch-data-processing-message-hub"
-       REGION: "{{deploy.parameters.deploy-region}}"
-       ORG: "{{deploy.parameters.deploy-org}}"
-       SPACE: "{{deploy.parameters.deploy-space}}"
-       NAME: "{{deploy.parameters.name}}-{{deploy.parameters.deploy-space}}"
-       CLOUD_FUNCTIONS_API_ENDPOINT: "{{deploy.parameters.cloud-functions-api-endpoint}}"
-       CLOUD_FUNCTIONS_API_KEY: "{{deploy.parameters.cloud-functions-api-key}}"
-       MESSAGE_HUB_API_KEY: "{{deploy.parameters.message-hub-api-key}}"
-       MESSAGE_HUB_USER: "{{deploy.parameters.message-hub-user}}"
-       MESSAGE_HUB_PASSWORD: "{{deploy.parameters.message-hub-password}}"
-       MESSAGE_HUB_KAFKA_REST_URL: "{{deploy.parameters.message-hub-rest-url}}"
-       MESSAGE_HUB_KAFKA_ADMIN_URL: "{{deploy.parameters.message-hub-admin-url}}"
-       MESSAGE_HUB_KAFKA_INSTANCE: "{{deploy.parameters.message-hub-instance-name}}"
-       MESSAGE_HUB_SRC_TOPIC: "{{deploy.parameters.message-hub-src-topic}}"
-       MESSAGE_HUB_DEST_TOPIC: "{{deploy.parameters.message-hub-out-topic}}"
-      execute: false
-
-deploy:
-  schema: deploy.json
-  service-category: pipeline
-  parameters:
-    deploy-region: "{{region}}"
-    deploy-org: "{{organization}}"
-    deploy-space: "{{space}}"
-    cloud-functions-api-endpoint: "openwhisk.ng.bluemix.net"
-    cloud-functions-auth-key: ""
-    message-hub-api-key: ""
-    message-hub-user: ""
-    message-hub-password: ""
-    message-hub-rest-url: "https://kafka-rest-prod01.messagehub.services.us-south.bluemix.net:443"
-    message-hub-admin-url: "https://kafka-admin-prod01.messagehub.services.us-south.bluemix.net:443"
-    message-hub-instance-name: "kafka-broker"
-    message-hub-src-topic: "in-topic"
-    message-hub-out-topic: "out-topic"
+version: '2'
+template:
+  name: "Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions Toolchain"
+  description: "Serverless reference architecture for IBM Message Hub data processing with IBM Cloud Functions Application"
+  required:
+    - sample-build
+    - sample-repo
+  info:
+    git url: >-
+      [https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub](https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub)
+    git branch: >-
+      [master](https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub/tree/master)
+toolchain:
+  name: 'cloud-functions-message-hub-toolchain'
+services:
+  sample-repo:
+    service_id: githubpublic
+    parameters:
+      repo_name: 'ibm-cloud-functions-refarch-data-processing-message-hub'
+      repo_url: 'https://github.com/IBM/ibm-cloud-functions-refarch-data-processing-message-hub'
+      type: clone
+  sample-build:
+    service_id: pipeline
+    parameters:
+      services:
+        - sample-repo
+      name: '{{services.sample-repo.parameters.repo_name}}'
+      ui-pipeline: true
+      configuration:
+        content:
+          $text: pipeline.yml
+        env:
+          SAMPLE_REPO: sample-repo
+          KAFKA_INSTANCE: '{{form.pipeline.parameters.message-hub-instance-name}}'
+          KAFKA_CREDS: '{{form.pipeline.parameters.message-hub-credentials-name}}'
+          SRC_TOPIC: '{{form.pipeline.parameters.message-hub-src-topic}}'
+          DEST_TOPIC: '{{form.pipeline.parameters.message-hub-out-topic}}'
+          IBMCLOUD_API_KEY: '{{form.pipeline.parameters.api-key}}'
+          IBMCLOUD_SPACE: '{{form.pipeline.parameters.deploy-space}}'
+          IBMCLOUD_ORG: '{{form.pipeline.parameters.deploy-org}}'
+          IBMCLOUD_REGION: '{{form.pipeline.parameters.deploy-region}}'
+        execute: true
+form:
+  pipeline:
+    parameters:
+      random: 'hello'
+    schema:
+      $ref: deploy.json

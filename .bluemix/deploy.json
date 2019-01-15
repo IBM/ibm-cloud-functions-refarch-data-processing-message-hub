@@ -6,47 +6,27 @@
     "type": "object",
     "properties": {
         "deploy-region": {
-            "description": "Deploy to this IBM Cloud Region",
+            "description": "IBM Cloud Region",
             "type": "string"
         },
         "deploy-org": {
-            "description": "Deploy to this IBM Cloud Organization",
+            "description": "IBM Cloud Organization",
             "type": "string"
         },
         "deploy-space": {
-            "description": "Deploy to this space",
+            "description": "IBM Cloud Space",
             "type": "string"
         },
-        "cloud-functions-api-endpoint": {
-            "description": "IBM Cloud Functions API endpoint",
-            "type": "string"
-        },
-        "cloud-functions-api-key": {
-            "description": "IBM Cloud Functions API key: copy the API key from https://console.ng.bluemix.net/openwhisk/learn/cli",
-            "type": "password"
-        },
-        "message-hub-api-key": {
-            "description": "IBM Message Hub name, copy from the IBM Cloud console Message Hub instance credentials",
-            "type": "password"
-        },
-        "message-hub-user": {
-            "description": "IBM Message Hub name, copy from the IBM Cloud console IBM Message Hub instance credentials",
-            "type": "string"
-        },
-        "message-hub-password": {
-            "description": "IBM Message Hub password, copy from the IBM Cloud console IBM Message Hub instance credentials",
-            "type": "password"
-        },
-        "message-hub-rest-url": {
-            "description": "IBM Message Hub REST URL, copy from Message Hub console",
-            "type": "string"
-        },
-        "message-hub-admin-url": {
-            "description": "IBM Message Hub Admin URL, copy from Message Hub console",
+        "api-key": {
+            "description": "IBM Cloud API key",
             "type": "string"
         },
         "message-hub-instance-name": {
-            "description": "IBM Message Hub service instance name, copy from Bluemix console",
+            "description": "IBM Message Hub service instance name",
+            "type": "string"
+        },
+        "message-hub-credentials-name": {
+            "description": "IBM Message Hub service credentials name",
             "type": "string"
         },
         "message-hub-src-topic": {
@@ -62,14 +42,9 @@
         "deploy-region",
         "deploy-org",
         "deploy-space",
-        "cloud-functions-api-key",
-        "cloud-functions-api-endpoint",
-        "message-hub-api-key",
-        "message-hub-user",
-        "message-hub-password",
-        "message-hub-rest-url",
-        "message-hub-admin-url",
+        "api-key",
         "message-hub-instance-name",
+        "message-hub-credentials-name",
         "message-hub-src-topic",
         "message-hub-out-topic"
     ],
@@ -79,52 +54,22 @@
             "url": "/devops/setup/bm-helper/helper.html"
         },
         {
-            "type": "text",
+            "type": "password",
             "readonly": false,
-            "title": "IBM Cloud Functions API Endpoint",
-            "key": "cloud-functions-api-endpoint"
-        },
-        {
-            "type": "text",
-            "readonly": false,
-            "title": "IBM Cloud Functions Auth Key",
-            "key": "cloud-functions-api-key"
-        },
-        {
-            "type": "text",
-            "readonly": false,
-            "title": "IBM Message Hub API Key",
-            "key": "message-hub-api-key"
-        },
-        {
-            "type": "text",
-            "readonly": false,
-            "title": "IBM Message Hub User",
-            "key": "message-hub-user"
-        },
-        {
-            "type": "text",
-            "readonly": false,
-            "title": "IBM Message Hub Password",
-            "key": "message-hub-password"
-        },
-        {
-            "type": "text",
-            "readonly": false,
-            "title": "IBM Message Hub REST URL",
-            "key": "message-hub-rest-url"
-        },
-        {
-            "type": "text",
-            "readonly": false,
-            "title": "IBM Message Hub Admin URL",
-            "key": "message-hub-admin-url"
+            "title": "IBM Cloud API Key",
+            "key": "api-key"
         },
         {
             "type": "text",
             "readonly": false,
             "title": "IBM Message Hub Instance Name",
             "key": "message-hub-instance-name"
+        },
+        {
+            "type": "text",
+            "readonly": false,
+            "title": "IBM Message Hub Credentials Name",
+            "key": "message-hub-credentials-name"
         },
         {
             "type": "text",
@@ -140,18 +85,13 @@
         },
         {
             "type": "table",
-            "columnCount": 4,
+            "columnCount": 3,
             "widths": [
-                "15%",
-                "28%",
-                "28%",
-                "28%"
+                "33%",
+                "33%",
+                "33%"
             ],
             "items": [
-                {
-                    "type": "label",
-                    "title": ""
-                },
                 {
                     "type": "label",
                     "title": "Region"
@@ -163,10 +103,6 @@
                 {
                     "type": "label",
                     "title": "Space"
-                },
-                {
-                    "type": "label",
-                    "title": "Deploy to"
                 },
                 {
                     "type": "select",

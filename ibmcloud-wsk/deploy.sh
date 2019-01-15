@@ -15,8 +15,36 @@
 # limitations under the License.
 ##############################################################################
 
-# Load configuration variables
-source ../local.env
+LOAD_ENV_FILE=${LOAD_ENV_FILE:-true}
+IBM_CLOUD_LOGIN=${IBM_CLOUD_LOGIN:-false}
+
+if [[ "$LOAD_ENV_FILE" == "true" ]]; then
+  if [ ! -f ../local.env ]; then
+    _err "Before deploying, copy template.local.env into local.env and fill in environment specific values."
+    exit 1
+  fi
+
+  # Load configuration variables
+  source ../local.env
+fi
+
+function ibmcloud_login() {
+  if [[ "$IBM_CLOUD_LOGIN" == "true" ]]; then
+    # remove 'ibm:yp:' prefix from region identifier if present. 
+    IBMCLOUD_REGION=$(echo $IBMCLOUD_REGION | cut -f 3 -d :)
+    # Skip version check updates
+    ibmcloud config --check-version=false
+
+    # Obtain the API endpoint from IBMCLOUD_REGION and set it as default
+    ibmcloud api --unset
+    IBMCLOUD_API_ENDPOINT=$(ibmcloud api | awk '/'$IBMCLOUD_REGION'/{ print $2 }')
+
+    # Login to ibmcloud, generate .wskprops
+    ibmcloud login --apikey $IBMCLOUD_API_KEY -a $IBMCLOUD_API_ENDPOINT
+    ibmcloud target -o "$IBMCLOUD_ORG" -s "$IBMCLOUD_SPACE"
+    ibmcloud fn api list > /dev/null
+  fi
+}
 
 function usage() {
     echo -e "Usage: $0 [--install,--uninstall,--env]"
@@ -72,15 +100,18 @@ function uninstall() {
 
 function showenv() {
     echo -e KAFKA_INSTANCE="$KAFKA_INSTANCE"
+    echo -e KAFKA_CREDS="$KAFKA_CREDS"
     echo -e SRC_TOPIC="$SRC_TOPIC"
     echo -e DEST_TOPIC="$DEST_TOPIC"
 }
 
 case "$1" in
     "--install" )
+        ibmcloud_login
         install
     ;;
     "--uninstall" )
+        ibmcloud_login
         uninstall
     ;;
     "--env" )

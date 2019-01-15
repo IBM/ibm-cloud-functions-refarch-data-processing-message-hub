@@ -1,83 +1,54 @@
 ---
 stages:
-- name: Deploy
+- name: DEPLOY
   inputs:
-  - service: ${REPO}
-    type: git
+  - type: git
     branch: master
-    dir_name: null
-  triggers:
-  - type: commit
+    service: ${SAMPLE_REPO}
   properties:
-  - name: CLOUD_FUNCTIONS_API_ENDPOINT
-    value: ${CLOUD_FUNCTIONS_API_ENDPOINT}
+  - name: LOAD_ENV_FILE
+    value: 'false'
     type: text
-  - name: CLOUD_FUNCTIONS_API_KEY
-    value: ${CLOUD_FUNCTIONS_API_KEY}
-    type: secure
-  - name: MESSAGE_HUB_API_KEY
-    value: ${MESSAGE_HUB_API_KEY}
-    type: secure
-  - name: MESSAGE_HUB_USER
-    value: ${MESSAGE_HUB_USER}
-    type: secure
-  - name: MESSAGE_HUB_PASSWORD
-    value: ${MESSAGE_HUB_PASSWORD}
-    type: secure
-  - name: MESSAGE_HUB_KAFKA_REST_URL
-    value: ${MESSAGE_HUB_KAFKA_REST_URL}
-    type: secure
-  - name: MESSAGE_HUB_KAFKA_ADMIN_URL
-    value: ${MESSAGE_HUB_KAFKA_ADMIN_URL}
+  - name: IBM_CLOUD_LOGIN
+    value: 'true'
     type: text
-  - name: MESSAGE_HUB_KAFKA_INSTANCE
-    value: ${MESSAGE_HUB_KAFKA_INSTANCE}
-    type: text
-  - name: MESSAGE_HUB_SRC_TOPIC
-    value: ${MESSAGE_HUB_SRC_TOPIC}
-    type: text
-  - name: MESSAGE_HUB_DEST_TOPIC
-    value: ${MESSAGE_HUB_DEST_TOPIC}
-    type: secure
   jobs:
   - name: Deploy
     type: deployer
-    target:
-      region_id: ${REGION}
-      organization: ${ORG}
-      space: ${SPACE}
-      application: messagehubdataprocessing
-    script: |+
+    deploy_type: customimage
+    script: |-
       #!/bin/bash
-      set -e
 
-      # Write the Cloud Functions specific values to .wskprops
-      echo "APIHOST=$CLOUD_FUNCTIONS_API_ENDPOINT" > "$HOME/.wskprops"
-      echo "NAMESPACE=_" >> "$HOME/.wskprops"
-      echo "APIVERSION=v1" >> "$HOME/.wskprops"
-      echo "AUTH=$CLOUD_FUNCTIONS_API_KEY" >> "$HOME/.wskprops"
-      echo "APIGW_ACCESS_TOKEN=" >> "$HOME/.wskprops"
-
-      # Map the expected environment variables to what's been supplied
-      export KAFKA_INSTANCE=$MESSAGE_HUB_KAFKA_INSTANCE
-      export SRC_TOPIC=$MESSAGE_HUB_SRC_TOPIC
-      export DEST_TOPIC=$MESSAGE_HUB_DEST_TOPIC
-
-      # Download the wskdeploy CLI
-      curl -OL https://github.com/apache/incubator-openwhisk-wskdeploy/releases/download/latest/wskdeploy-latest-linux-amd64.tgz
-      tar xf wskdeploy-latest-linux-amd64.tgz
-      chmod 755 wskdeploy
-
-      # Make service credentials available to your environment
-      bx wsk package refresh
-
-      # Deploy the packages, actions, triggers, and rules using your preferred language
-      mv wskdeploy runtimes/nodejs/
-      cd runtimes/nodejs # Or runtimes/[php|python|swift]
-      ./wskdeploy
-
+      cd ibmcloud-wsk
+      ./deploy.sh --install
+    docker_image: jamesthomas/cloud-functions-tools
 hooks:
 - enabled: true
   label: null
   ssl_enabled: false
-  url: https://devops-api.ng.bluemix.net/v1/messaging/webhook/publish
+  url: http://lms-api/v1/messaging/webhook/publish
+properties:
+- name: KAFKA_INSTANCE
+  value: ${KAFKA_INSTANCE}
+  type: text
+- name: KAFKA_CREDS
+  value: ${KAFKA_CREDS}
+  type: text
+- name: SRC_TOPIC
+  value: ${SRC_TOPIC}
+  type: text
+- name: DEST_TOPIC
+  value: ${DEST_TOPIC}
+  type: text
+- name: IBMCLOUD_API_KEY
+  value: ${IBMCLOUD_API_KEY}
+  type: text
+- name: IBMCLOUD_SPACE
+  value: ${IBMCLOUD_SPACE}
+  type: text
+- name: IBMCLOUD_ORG
+  value: ${IBMCLOUD_ORG}
+  type: text
+- name: IBMCLOUD_REGION
+  value: ${IBMCLOUD_REGION}
+  type: text
