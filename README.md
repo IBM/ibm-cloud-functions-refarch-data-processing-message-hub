@@ -125,11 +125,11 @@ Activation: 'messageHubProduce' (431bb7acb23e4cd99bb7acb23e2cd94c)
 
 ### Deploy manually with the `ibmcloud fn` command line tool
 
-[This approach shows you how to deploy individual the packages, actions, triggers, and rules with CLI commands](bx-wsk/README.md). It helps you understand and control the underlying deployment artifacts.
+[This approach shows you how to deploy individual the packages, actions, triggers, and rules with CLI commands](ibmcloud-wsk/README.md). It helps you understand and control the underlying deployment artifacts.
 
 ### Deploy with IBM Continuous Delivery
 
-[This approach sets up a continuous delivery pipeline that redeploys on changes to a personal clone of this repository](bx-cd/README.md). It may be of interest to setting up an overall software delivery lifecycle around Cloud Functions that redeploys automatically when changes are pushed to a Git repository.
+[This approach sets up a continuous delivery pipeline that redeploys on changes to a personal clone of this repository](ibmcloud-cd/README.md). It may be of interest to setting up an overall software delivery lifecycle around Cloud Functions that redeploys automatically when changes are pushed to a Git repository.
 
 ## License
 
