@@ -18,7 +18,7 @@ As an alternative to this end-to-end example, you might also consider the more [
 
 ## 1. Configure IBM Event Streams
 
-Log into the IBM Cloud, provision a [Event Streams](https://console.bluemix.net/catalog/services/event-streams) instance, and name it `kafka-broker`. On the "Manage" tab of your Events Streams console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
+Log into the IBM Cloud, provision a [Event Streams](https://console.bluemix.net/catalog/services/event-streams) instance, and name it `kafka-broker`. On the "Manage" tab of your Events Streams console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _kafka-credentials_.
 
 Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
@@ -39,7 +39,7 @@ ibmcloud login -a api.ng.bluemix.net -o "$YOUR_ORG" -s "$YOUR_SPACE"
 Open one terminal window to poll the logs:
 
 ```bash
-ibmcloud wsk activation poll
+ibmcloud fn activation poll
 ```
 
 Send a message with a set of events to process.
@@ -48,7 +48,7 @@ Send a message with a set of events to process.
 # Produce a message, will trigger the sequence of actions
 DATA=$( base64 ../events.json | tr -d '\n' | tr -d '\r' )
 
-ibmcloud wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
+ibmcloud wsk action invoke Bluemix_${KAFKA_INSTANCE}_${KAFKA_CREDS}/messageHubProduce \
   --param topic $SRC_TOPIC \
   --param value "$DATA" \
   --param base64DecodeValue true
@@ -71,9 +71,9 @@ This section provides a deeper look into what the `deploy.sh` script executes so
 Create the `message-trigger` trigger using the Event Streams packaged feed that listens for new messages. The package refresh will make the Event Streams service credentials and connection information available to OpenWhisk.
 
 ```bash
-ibmcloud wsk package refresh
-ibmcloud wsk trigger create message-trigger \
-  --feed Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubFeed \
+ibmcloud fn package refresh
+ibmcloud fn trigger create message-trigger \
+  --feed Bluemix_${KAFKA_INSTANCE}_${KAFKA_CREDS}/messageHubFeed \
   --param isJSONData true \
   --param topic ${SRC_TOPIC}
 ```
@@ -83,8 +83,8 @@ ibmcloud wsk trigger create message-trigger \
 Upload the `receive-consume` action as a JavaScript action. This downloads messages when they arrive via the trigger.
 
 ```bash
-ibmcloud wsk package create data-processing-message-hub
-ibmcloud wsk action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
+ibmcloud fn package create data-processing-message-hub
+ibmcloud fn action create data-processing-message-hub/receive-consume ../runtimes/nodejs/actions/receive-consume.js
 ```
 
 ### 5.3 Create action to aggregate and send back message
@@ -92,7 +92,7 @@ ibmcloud wsk action create data-processing-message-hub/receive-consume ../runtim
 Upload the `transform-produce` action. This aggregates information from the action above, and sends a summary JSON string back to another Event Streams topic.
 
 ```bash
-ibmcloud wsk action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
+ibmcloud fn action create data-processing-message-hub/transform-produce ../runtimes/nodejs/actions/transform-produce.js \
   --param topic ${DEST_TOPIC} \
   --param kafka ${KAFKA_INSTANCE}
 ```
@@ -102,7 +102,7 @@ ibmcloud wsk action create data-processing-message-hub/transform-produce ../runt
 Declare a linkage between the `receive-consume` and `transform-produce` in a sequence named `message-processing-sequence`.
 
 ```bash
-ibmcloud wsk action create data-processing-message-hub/message-processing-sequence \
+ibmcloud fn action create data-processing-message-hub/message-processing-sequence \
   --sequence data-processing-message-hub/receive-consume,data-processing-message-hub/transform-produce
 ```
 
@@ -111,7 +111,7 @@ ibmcloud wsk action create data-processing-message-hub/message-processing-sequen
 Declare a rule named `message-rule` that links the trigger `message-trigger` to the sequence named `message-processing-sequence`.
 
 ```bash
-ibmcloud wsk rule create message-rule message-trigger data-processing-message-hub/message-processing-sequence
+ibmcloud fn rule create message-rule message-trigger data-processing-message-hub/message-processing-sequence
 ```
 
 ### 5.6 Test new message events
@@ -120,7 +120,7 @@ ibmcloud wsk rule create message-rule message-trigger data-processing-message-hu
 # Produce a message, will trigger the sequence
 DATA=$( base64 ../events.json | tr -d '\n' | tr -d '\r' )
 
-ibmcloud wsk action invoke Bluemix_${KAFKA_INSTANCE}_Credentials-1/messageHubProduce \
+ibmcloud fn action invoke Bluemix_${KAFKA_INSTANCE}_${KAFKA_CREDS}/messageHubProduce \
   --param topic $SRC_TOPIC \
   --param value "$DATA" \
   --param base64DecodeValue true
@@ -133,5 +133,5 @@ Check for errors first in the OpenWhisk activation log. Tail the log on the comm
 If the error is not immediately obvious, make sure you have the [latest version of the `ibmcloud` CLI installed](https://console.ng.bluemix.net/openwhisk/learn/cli). If it's older than a few weeks, download an update.
 
 ```bash
-ibmcloud wsk property get --cliversion
+ibmcloud fn property get --cliversion
 ```

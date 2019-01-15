@@ -15,8 +15,8 @@ If you haven't already, sign up for an IBM Cloud account then go to the [Cloud F
 
 ## Included components
 
-- IBM Cloud Functions (powered by Apache OpenWhisk)
-- IBM Event Streams (powered by Apache Kafka)
+- [IBM Cloud Functions](https://cloud.ibm.com/openwhisk) (powered by Apache OpenWhisk)
+- [IBM Event Streams](https://cloud.ibm.com/catalog/services/event-streams) (powered by Apache Kafka)
 
 The application deploys two IBM Cloud Functions (based on Apache OpenWhisk) that read from and write messages to IBM Event Streams (based on Apache Kafka). This demonstrates how to work with data services and execute logic in response to message events.
 
@@ -34,13 +34,35 @@ Behind the scenes, the UI uses the `wskdeploy` tool, which you can also use dire
 
 This approach will deploy the Cloud Functions actions, triggers, and rules using the runtime-specific manifest file available in this repository.
 
-- Download the latest [`bx` CLI and Cloud Functions plugin](https://console.bluemix.net/openwhisk/learn/cli).
+### Download CLI tools
+
+- Download the latest [`ibmcloud` CLI and Cloud Functions plugin](https://cloud.ibm.com/openwhisk/learn/cli).
 - Download the latest [`wskdeploy` CLI](https://github.com/apache/incubator-openwhisk-wskdeploy/releases).
-- Provision an [IBM Event Streams](https://console.bluemix.net/catalog/services/event-streams) instance, and name it `kafka-broker`. You can use the web console to create your instance, or the CLI with a command like so:
+### Provision Event Streams instance
+
+- Provision an [IBM Event Streams](https://cloud.ibm.com/catalog/services/event-streams) instance and name it `kafka-broker`.  
+
+*You can use the [web console](https://cloud.ibm.com/catalog/services/event-streams) to create the instance or the CLI with a command like:*
+
 ```
-$ bx resource service-instance-create kafka-broker messagehub enterprise-3nodes-2tb us-south
+ibmcloud service create messagehub standard kafka-broker
 ```
-Once created, on the "Manage" tab of your Event Streams console create two topics: _in-topic_ and _out-topic_. On the "Service credentials" tab make sure to add a new credential named _Credentials-1_.
+### Create Event Streams credentials
+
+- Create new service credentials for the `kafka-broker` instance named  _kafka-credentials_.
+
+This can be achieved using the "Service credentials" tab on the service instance web page in IBM Cloud or using the IBM Cloud CLI with the following command.
+
+```
+ibmcloud service key-create kafka-broker kafka-credentials
+```
+
+### Create message topics
+
+- From the "Manage" tab on the Event Streams instance page in IBM Cloud, create the following topics:
+  - _in-topic_ 
+  - _out-topic_
+
 - Copy `template.local.env` to a new file named `local.env` and update the `KAFKA_INSTANCE`, `SRC_TOPIC`, and `DEST_TOPIC` values for your instance if they differ.
 
 ### Deploy with `wskdeploy`
@@ -52,7 +74,7 @@ cd ibm-cloud-functions-refarch-data-processing-message-hub
 
 # Make service credentials available to your environment
 source local.env
-bx wsk package refresh
+ibmcloud fn package refresh
 
 # Deploy the packages, actions, triggers, and rules using your preferred language
 cd runtimes/nodejs # Or runtimes/[php|python|swift]
@@ -66,9 +88,41 @@ wskdeploy
 wskdeploy undeploy
 ```
 
+## Testing with example messages
+
+- Run the following command to poll for activations logs
+
+```
+ibmcloud wsk activation poll
+```
+
+- Send a test message to the input topic using the package action.
+
+```
+$ DATA=$( base64 events.json | tr -d '\n' | tr -d '\r' )
+$ ibmcloud wsk action invoke Bluemix_${KAFKA_INSTANCE}_${KAFKA_CREDS}/messageHubProduce \
+  --param topic $SRC_TOPIC \
+  --param value "$DATA" \
+  --param base64DecodeValue true
+```
+
+- Review the output from the activation polling command to see the activation events from the trigger and actions.
+
+```
+Activation: 'transform-produce' (76b37762ec28417bb37762ec28317b43)
+...
+Activation: 'receive-consume' (ee0423e3c9d742918423e3c9d7329147)
+...
+Activation: 'message-processing-sequence' (4adcd36bf44b4cf39cd36bf44bfcf32f)
+...
+Activation: 'message-trigger' (8886c1ff06a04d4d86c1ff06a07d4d76)
+...
+Activation: 'messageHubProduce' (431bb7acb23e4cd99bb7acb23e2cd94c)
+```
+
 ## Alternative deployment methods
 
-### Deploy manually with the `bx wsk` command line tool
+### Deploy manually with the `ibmcloud fn` command line tool
 
 [This approach shows you how to deploy individual the packages, actions, triggers, and rules with CLI commands](bx-wsk/README.md). It helps you understand and control the underlying deployment artifacts.
 
