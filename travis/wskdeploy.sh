@@ -38,6 +38,9 @@ chmod 755 wskdeploy
 bx wsk package refresh
 
 # Deploy the packages, actions, triggers, and rules starting from a clean slate
+ibmcloud fn rule delete --disable message-rule
+ibmcloud fn trigger delete message-trigger
+
 mv wskdeploy runtimes/nodejs/
 cd runtimes/nodejs # Or runtimes/[php|python|swift]
 ./wskdeploy
